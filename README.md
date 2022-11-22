@@ -121,6 +121,25 @@ class Student(Person):
         self.grade = grade
 ```
 
+15. what is middleware?
+> Middleware is software that provides common services and capabilities to applications outside of what’s offered by the operating system.
+
+Middleware helps developers build applications more efficiently. It acts like the connective tissue between applications, data, and users.
+
+Middleware we make it like before we accsess the backend for authentacation for example so if the middleware didnot accept the username and password (if we imagine that the user didnot enter the password correctly) so the middleware will send an error mesg so the request will not continue to the backend to get the error response, the response will send from the middleware not from the backend 
+
+so we consider that the middleware is like a check point before we acheave the backend.
+
+
+and there are types of middleware:
+- build in middleware
+- auth middleware
+- error handler middleware
+- database middleware
+- etc...
+
+from [redhat middleware](https://www.redhat.com/en/topics/middleware/what-is-middleware)
+
 
 
 ### course resources:
