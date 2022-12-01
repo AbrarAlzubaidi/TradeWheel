@@ -1,7 +1,8 @@
 from django.contrib.auth.models import User
 from .models import Profile, Location
 from django.dispatch import receiver
-from django.db.models.signals import post_save # means that post-> create, so when we create save
+from django.db.models.signals import post_save, pre_delete # means that post-> create, so when we create save
+from django.db.models import Q
 
 @receiver(post_save, sender=User) # link this signal with the User model so will be executed when we create a User model
 def create_user_profile(sender, instance, created, **kwargs):
@@ -29,3 +30,12 @@ def create_profile_location(sender, instance, created, **kwargs):
         location = Location.objects.create()
         instance.location = location
         instance.save()
+
+        
+
+@receiver(pre_delete, sender=Profile)
+def delete_location_when_user_deleted(sender, instance, **kwargs):
+    user_id = instance.user.id
+    user_location_id = Profile.objects.filter(user=user_id).values_list('location', flat=True).get()
+    print('*'*50, f'user id is: {user_id} and his location id is {user_location_id}')
+    Location.objects.get(id=user_location_id).delete()

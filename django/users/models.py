@@ -18,7 +18,7 @@ class Profile(models.Model):
     phone_number = models.CharField(max_length=12, blank=True)
     photo = models.ImageField(null=True)
     bio = models.CharField(max_length=100, blank=True)
-    location = models.OneToOneField(Location, on_delete=models.CASCADE, related_name='location', null=True)
+    location = models.OneToOneField(Location, on_delete=models.SET_NULL, related_name='location', null=True)
 
     def __str__(self):
         return f'{self.user.username}\'s profile'
