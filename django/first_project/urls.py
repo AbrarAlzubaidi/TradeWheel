@@ -15,9 +15,22 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf.urls.static import static
+from django.conf import settings
+
 from main import urls as main_app_urls
+from users import urls as users_app_urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include(main_app_urls)) # include all the urls that inside main app
+    path('', include(main_app_urls)), # include all the urls that inside main app
+    path('', include(users_app_urls))
 ]
+
+# media file url
+# static function takes 2 args: 
+#   - first one is the path (and we have it from settings.py)
+#   - the second one is the folder that will point to
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
