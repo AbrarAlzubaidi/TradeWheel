@@ -11,3 +11,10 @@ def main_view(request):
     template_path = "main/main.html"
     return render(request, template_path, {"name": "automax"})
     # {"name": "automax"} this dictionary is for pass avalue to the template
+
+def home_page_view(request):
+    """
+    home page view when user logged in
+    """
+    print(request.user.username)
+    return render(request, "main/home.html")
