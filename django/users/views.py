@@ -3,6 +3,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import redirect
 from django.contrib.auth import authenticate, login
 from main.views import home_page_view
+from django.contrib import messages
 
 def login_view(request):
     """
@@ -20,9 +21,15 @@ def login_view(request):
             print('the authinticated user is: ', user)
             if user is not None:
                 login(request, user)
+                messages.success(request, 'logged in successfully')
                 return redirect(home_page_view)
             else:
-                pass
+                # if the user not saved in the database then the user should create 
+                # a new account (register)
+                # then redirect him/her into login page
+                messages.error(request, 'unfortunatly we cant see ur name with us try to register')
+        else:
+          messages.error(request, 'unfortunatly we cant see u with us')  
     elif request.method == 'GET':
         login_form = AuthenticationForm
     return render(request, 'views/login.html', {'login_form': login_form})

@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
 
 # create a view that responsible to show themain page that will appear when any user will navigate to the website
 
@@ -12,6 +13,7 @@ def main_view(request):
     return render(request, template_path, {"name": "automax"})
     # {"name": "automax"} this dictionary is for pass avalue to the template
 
+@login_required
 def home_page_view(request):
     """
     home page view when user logged in
