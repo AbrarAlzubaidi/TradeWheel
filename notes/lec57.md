@@ -1,0 +1,1 @@
+- a good resource help me in register page [here](https://ordinarycoders.com/blog/article/django-user-register-login-logout)
