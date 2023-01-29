@@ -21,7 +21,7 @@ class Profile(models.Model):
     location = models.OneToOneField(Location, on_delete=models.SET_NULL, related_name='location', null=True)
 
     def __str__(self):
-        return f'{self.user.username}\'s profile'
+        return f'{self.user.username}'
 
 
 
