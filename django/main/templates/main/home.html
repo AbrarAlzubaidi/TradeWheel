@@ -21,8 +21,8 @@
             </div>
             <div class="col-lg-6 col-md-8 mx-auto">
                 <form method="get">
-                    {% comment %} {{ listing_filter.form|crispy }} {% endcomment %}
-                    {% comment %} <button class="btn btn-sm btn-danger" type="submit">Submit</button> {% endcomment %}
+                    {{ car_list_filter.form|crispy }}
+                    <button class="btn btn-sm btn-danger" type="submit">Submit</button>
                 </form>
             </div>
         </div>
@@ -31,11 +31,19 @@
         <div class="container">
             <h1 class='my-4 text-center'> List of Cars</h1>
             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+                {% if car_list_filter.qs.length != 0 %}
+                {% for listing in car_list_filter.qs %}
+                <div class="col">
+                    {% include "components/car_list.html" %}
+                </div>
+                {% endfor %}
+                {% else %}
                 {% for listing in car_list %}
                 <div class="col">
                     {% include "components/car_list.html" %}
                 </div>
                 {% endfor %}
+                {% endif %}
             </div>
         </div>
     </div>

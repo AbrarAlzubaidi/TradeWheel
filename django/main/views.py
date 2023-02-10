@@ -1,9 +1,10 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import Car
 from users.models import Profile
 from .forms import AddCarForm
+from .filters import CarFilter
 from users.forms import LocationForm
 # create a view that responsible to show themain page that will appear when any user will navigate to the website
 
@@ -22,9 +23,13 @@ def home_page_view(request):
     home page view when user logged in
     """
     car_list = Car.objects.all()
+    car_list_filter = CarFilter(request.GET, queryset=car_list)
     return render(request, "main/home.html", {
-        "car_list":car_list,
+        "car_list":car_list, # if we keep this when we apply the filter the listing data still shown
+        "car_list_filter":car_list_filter
     })
+
+
 @login_required
 def list_view(request):
     if request.method == 'POST':
@@ -56,6 +61,22 @@ def list_view(request):
         listing_form = AddCarForm()
         location_form = LocationForm()
     return render(request, 'main/create_car.html', {'listing_form': listing_form, 'location_form': location_form, })
+
+    
+@login_required
+def detail(request, detail_id): # detail_id: is the name of the param
+    data = get_object_or_404(Car, id=detail_id)
+    try:
+        if data is None:
+            raise Exception
+        else:
+            return render(request, 'main/car_detail.html', {'car':data})
+        
+    except Exception as e:
+        messages.error(request, f'invalid UID passed {id} was not correct')
+        return redirect('home')
+    
+ 
 
 
 # @login_required

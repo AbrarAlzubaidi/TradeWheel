@@ -1,11 +1,13 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 from django.views import View
 from main.views import home_page_view, main_view
-from .forms import NewUserForm
+from .forms import NewUserForm, LocationForm, ProfileForm, ProfileUserForm
+from .models import Profile
 
 def login_view(request):
     """
@@ -76,3 +78,41 @@ class RegisterView(View):
 def logout_view(request):
     logout(request)
     return redirect(main_view)
+
+@method_decorator(login_required, name='dispatch')
+class ProfileView(View):
+
+    def get(self, request):
+        user_id = request.user.id
+        user_profile = Profile.objects.filter(user=user_id).get()
+
+        location_form = LocationForm(instance=user_profile.location)
+        profile_form = ProfileForm(instance=user_profile)
+        user_form = ProfileUserForm(instance=request.user)
+        return render(request, 'views/profile.html', {
+            'user_form': user_form,
+            'profile_form': profile_form,
+            'location_form': location_form
+        })
+    
+    def post(self, request):
+        user_id = request.user.id
+        user_profile = Profile.objects.filter(user=user_id).get()
+
+        # user_form = ProfileUserForm(request.POST) # if we didnot pass the data, like here, when we save the form that will not overwrite the data, rather than that it will create a new instance. and that what w dont need
+        user_form = ProfileUserForm(request.POST, instance=request.user)
+        profile_form = ProfileForm(request.POST, request.FILES, instance=user_profile)
+        location_form = LocationForm(request.POST, instance=user_profile.location)
+
+        if user_form.is_valid() and profile_form.is_valid() and location_form.is_valid():
+            user_form.save()
+            profile_form.save()
+            location_form.save()
+            messages.success(request, 'Updating Profile successfully')
+        else:
+            messages.error(request, 'unfortunatly, error happen when updaing profile data')
+        return render(request, 'views/profile.html', {
+            'user_form': user_form,
+            'profile_form': profile_form,
+            'location_form': location_form
+        })
