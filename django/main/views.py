@@ -1,3 +1,4 @@
+from imp import reload
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -64,8 +65,8 @@ def list_view(request):
 
     
 @login_required
-def detail(request, detail_id): # detail_id: is the name of the param
-    data = get_object_or_404(Car, id=detail_id)
+def detail(request, car_id): # car_id: is the name of the param
+    data = get_object_or_404(Car, id=car_id)
     try:
         if data is None:
             raise Exception
@@ -76,7 +77,39 @@ def detail(request, detail_id): # detail_id: is the name of the param
         messages.error(request, f'invalid UID passed {id} was not correct')
         return redirect('home')
     
- 
+@login_required
+def edit_view(request, car_id):
+    try:
+        car = get_object_or_404(Car, id=car_id)
+        if car is None:
+            raise Exception
+        
+        if request.method == 'POST':
+            listing_form = AddCarForm(request.POST, request.FILES, instance=car)
+            location_form = LocationForm(request.POST, instance=car.location)
+
+            if listing_form.is_valid() and location_form.is_valid():
+                listing_form.save()
+                location_form.save()
+                messages.info(
+                        request, f'Updating Successfully!')
+                return redirect('home')
+            else:
+                messages.error(request, 'an error happen when edit the data')
+                return reload()
+    
+        else:
+            listing_form = AddCarForm(instance=car)
+            location_form = LocationForm(instance=car.location)
+            return render(request, 'main/edit_car.html', {
+                'location_form': location_form,
+                'listing_form': listing_form,
+            })
+    
+    except Exception as e:
+        messages.error(request, f'an error happen when edit the data {e}')
+        return redirect('home')
+    return render(request, 'main/edit_car.html')
 
 
 # @login_required
