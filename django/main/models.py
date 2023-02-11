@@ -1,4 +1,5 @@
 import uuid
+from datetime import datetime   
 from django.db import models
 from users.models import Profile, Location
 from .constants import CAR_BRANDS, TRANSMISSIONS_OPTIONS
@@ -24,3 +25,13 @@ class Car(models.Model):
 
     def __str__(self):
         return f'{self.seller.user.username} {self.model} car'
+    
+
+class UsersLikedCars(models.Model):
+    # it a M:N relation ship between the profile and the cars 
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    car = models.ForeignKey(Car, on_delete=models.CASCADE)
+    liked_date = models.DateTimeField(auto_now_add=True, blank=True, null=True) 
+
+    def __str__(self):
+        return f'user {self.profile.user.username} liked car {self.car.model}'

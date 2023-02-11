@@ -109,8 +109,9 @@ def edit_view(request, car_id):
     except Exception as e:
         messages.error(request, f'an error happen when edit the data {e}')
         return redirect('home')
-    return render(request, 'main/edit_car.html')
 
+def liked_car_view(request, car_id):
+    pass
 
 # @login_required
 # def create_car(request):

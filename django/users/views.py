@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.views import View
 from main.views import home_page_view, main_view
-from main.models import Car
+from main.models import Car, UsersLikedCars
 from .forms import NewUserForm, LocationForm, ProfileForm, ProfileUserForm
 from .models import Profile
 
@@ -94,11 +94,17 @@ class ProfileView(View):
         user_cars_list = Car.objects.filter(seller=user_profile)
         if user_cars_list is None:
             user_cars_list = None
+
+        user_like_list = UsersLikedCars.objects.filter(profile=user_profile)
+        if user_like_list is None:
+            user_like_list = None
+
         return render(request, 'views/profile.html', {
             'user_form': user_form,
             'profile_form': profile_form,
             'location_form': location_form,
-            'user_cars_list': user_cars_list
+            'user_cars_list': user_cars_list,
+            'user_like_list': user_like_list
         })
     
     def post(self, request):
@@ -114,6 +120,10 @@ class ProfileView(View):
         if user_cars_list is None:
             user_cars_list = None
 
+        user_like_list = UsersLikedCars.objects.filter(profile=user_profile)
+        if user_like_list is None:
+            user_like_list = None
+
         if user_form.is_valid() and profile_form.is_valid() and location_form.is_valid():
             user_form.save()
             profile_form.save()
@@ -125,5 +135,6 @@ class ProfileView(View):
             'user_form': user_form,
             'profile_form': profile_form,
             'location_form': location_form,
-            'user_cars_list': user_cars_list
+            'user_cars_list': user_cars_list,
+            'user_like_list': user_like_list
         })

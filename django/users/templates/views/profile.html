@@ -50,7 +50,7 @@
             </tbody>
         </table>
     </div>
-    {% comment %} <div class="container px-4">
+    <div class="container px-4">
         <div class="row g-4 py-5">
             <div class="col d-flex align-items-start">
                 <div>
@@ -60,14 +60,18 @@
         </div>
         <table class="table table-hover">
             <tbody>
-                {% for liked_listing in user_liked_listings %}
+                {% if user_like_list %}
+                {% for liked_listing in user_like_list %}
                 <tr>
-                    <td>{{ liked_listing.listing.model }}</td>
-                    <td>{{ liked_listing.like_date }}</td>
+                    <td>{{ liked_listing.car.model }}</td>
+                    <td>{{ liked_listing.liked_date }}</td>
                 </tr>
                 {% endfor %}
+                {% else %}
+                <h1>No Cars yet (。_。)</h1>
+                {% endif %}
             </tbody>
         </table>
-    </div> {% endcomment %}
+    </div>
 </div>
 {% endblock %}

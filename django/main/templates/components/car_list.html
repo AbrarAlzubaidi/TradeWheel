@@ -33,7 +33,7 @@
                 <a href="{% url 'edit_car' car_id=listing.id %}" type="button" class="btn btn-sm btn-outline-secondary">Edit</a>
                 {% endif %}
             </div>
-            <small class="text-muted">{{listing.updated_at}}</small>
+            <small class="text-muted">{{listing.update_at}}</small>
             <button id="like_{{listing.id}}" type="button" value="like" class="btn btn-secondary">
                 {% comment %} {% if listing.id in liked_listings_ids %} {% endcomment %}
                 {% comment %} <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-heart"
