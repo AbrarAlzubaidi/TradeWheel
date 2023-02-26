@@ -12,19 +12,24 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 from pathlib import Path
 import os
+import environ
 from django.contrib.messages import constants as messages
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# initialize env variable
+env = environ.Env()
+env.read_env()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-(qs%l+1v6-$a%+*=x2ki4xwmumktkke5a-b4m&5rd$$%iep7zm'
+SECRET_KEY = str(env('SECRET_KEY'))
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = True if env('DJANGO_DEBUG_MODE') == True else False
+print(f'server on debug mode: {DEBUG}')
 
 ALLOWED_HOSTS = ['127.0.0.1','localhost']
 CSRF_TRUSTED_ORIGINS=['http://127.0.0.1:8000']
@@ -47,6 +52,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -79,13 +85,24 @@ WSGI_APPLICATION = 'first_project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
+# if DEBUG:
+#     DATABASES = {
+#         'default': {
+#             'ENGINE': 'django.db.backends.sqlite3',
+#             'NAME': BASE_DIR / 'db.sqlite3',
+#         }
+#     }
+# else: 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': env('ENGINE'),
+        'NAME': env('NAME'), 
+        'USER': env('USER'), 
+        'PASSWORD': env('PASSWORD'),
+        'HOST': env('HOST'), 
+        'PORT': env('PORT'),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -122,7 +139,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR,'static')
 MEDIA_URL = 'assets/'
+
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # Media file (uploaded files)
 MEDIA_ROOT = os.path.join(BASE_DIR,'assets')
@@ -147,3 +167,12 @@ LOGIN_REDIRECT_URL = 'home/'
 MESSAGES_TAGS = {
     messages.ERROR: 'danger'
 }
+
+# Email settings 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' # core Django package.
+EMAIL_HOST = 'smtp.mail.yahoo.com' # whatever email hosting service you plan to use to send the emails
+EMAIL_PORT = 587 # the default email port that most email servers use
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = str(env('EMAIL_HOST_USER')) # your email
+EMAIL_HOST_PASSWORD = str(env('EMAIL_HOST_PASSWORD'))
+# values are security protocols that Django can use to send e-mails.

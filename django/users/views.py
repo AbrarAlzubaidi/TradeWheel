@@ -129,6 +129,7 @@ class ProfileView(View):
             profile_form.save()
             location_form.save()
             messages.success(request, 'Updating Profile successfully')
+            return redirect('profile')
         else:
             messages.error(request, 'unfortunatly, error happen when updaing profile data')
         return render(request, 'views/profile.html', {

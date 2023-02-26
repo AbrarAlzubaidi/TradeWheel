@@ -86,5 +86,23 @@
         </div>
     </div>
 </main>
+<script>
+    $('#sendEmail').click(()=>{
+        $.ajax({
+            type: "POST",
+            url: "{% url 'send_email' car_id=car.id %}",
+            data: {
+                'csrfmiddlewaretoken': "{{ csrf_token }}"
+            },
+            dataType: "json",
+            success: function(r){
+                alert('Tamam');
+            },
+            error: function(r, e){
+                alert(`error ${r.info}`)
+            }
+        })
+    })
 
+</script>
 {% endblock %}
