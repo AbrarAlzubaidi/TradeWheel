@@ -20,8 +20,8 @@ def main_view(request):
     that will return a http response
     """
     template_path = "main/main.html"
-    return render(request, template_path, {"name": "automax"})
-    # {"name": "automax"} this dictionary is for pass avalue to the template
+    return render(request, template_path, {"name": "tradeWheels"})
+    # {"name": "tradeWheels"} this dictionary is for pass a value to the template
 
 @login_required
 def home_page_view(request):
@@ -55,9 +55,7 @@ def list_view(request):
                 listing_location = location_form.save()
 
                 user_id = request.user.id
-                # print('*'*50, user_id)
                 user_profile = Profile.objects.filter(user=user_id).get()
-                # print('*'*50, user_profile)
 
                 listing.seller = user_profile
                 listing.location = listing_location
@@ -161,8 +159,7 @@ def sending_email_view(request, car_id):
     from_email = settings.EMAIL_HOST_USER  
     recipient_list = [car.seller.user.email,]
     message_subject = f'{request.user.username} is interested in your car {car.model}'
-    message_body = f' Hi {car.seller.user.username}, {request.user.username} user is interested in your car which is {car.model} on Automax '  
-    print('*'*50, from_email,'\n', recipient_list,'\n', message_subject,'\n', message_body)
+    message_body = f' Hi {car.seller.user.username}, {request.user.username} user is interested in your car which is {car.model} on TradeWheels '  
     
     try:
         send_mail(message_subject, message_body, from_email, recipient_list, fail_silently=True)
@@ -187,10 +184,9 @@ def send_email(request, car_id):
                 password=settings.EMAIL_HOST_PASSWORD, 
                 use_tls=settings.EMAIL_USE_TLS  
         ) as connection:
-            print(car_id)
             car = get_object_or_404(Car, id=car_id)
             subject = f'{request.user.username} is interested in your car {car.model}'
-            message = f' Hi {car.seller.user.username}, {request.user.username} user is interested in your car which is {car.model} on Automax '  
+            message = f' Hi {car.seller.user.username}, {request.user.username} user is interested in your car which is {car.model} on TradeWheels '  
             email_from = settings.EMAIL_HOST_USER  
             recipient_list = [car.seller.user.email, ]  
             EmailMessage(subject, message, email_from, recipient_list, connection=connection).send()  
@@ -215,7 +211,6 @@ def send_email(request, car_id):
 #                 car = create_form.save(commit=False) # save the car info but dont commit it to the database yet
 #                 #? why save the data but dont push it into the db? cause we have some data to grab it then we will save it
 #                 location = location_form.save() # save the location 
-#                 print('*'*50, request.user)
 #                 car.seller = request.user
 #                 car.location = location
 #                 car.save()

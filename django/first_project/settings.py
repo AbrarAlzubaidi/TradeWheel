@@ -19,6 +19,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # initialize env variable
 env = environ.Env()
+if(env.read_env()): print('initialized')
 env.read_env()
 
 # Quick-start development settings - unsuitable for production
@@ -27,13 +28,15 @@ env.read_env()
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = str(env('SECRET_KEY'))
 
+
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True if env('DJANGO_DEBUG_MODE') == True else False
+# DEBUG = True if env('DJANGO_DEBUG_MODE') == True else False
+DEBUG=bool(env('DEBUG'))
 print(f'server on debug mode: {DEBUG}')
 
-ALLOWED_HOSTS = ['127.0.0.1','localhost']
-CSRF_TRUSTED_ORIGINS=['http://127.0.0.1:8000']
+ALLOWED_HOSTS = ['127.0.0.1','localhost', '.vercel.app']
 # CSRF_TRUSTED_ORIGINS
+CSRF_TRUSTED_ORIGINS=['http://127.0.0.1:8000']
 # Application definition
 
 INSTALLED_APPS = [
@@ -85,24 +88,24 @@ WSGI_APPLICATION = 'first_project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-# if DEBUG:
-#     DATABASES = {
-#         'default': {
-#             'ENGINE': 'django.db.backends.sqlite3',
-#             'NAME': BASE_DIR / 'db.sqlite3',
-#         }
-#     }
-# else: 
-DATABASES = {
-    'default': {
-        'ENGINE': env('ENGINE'),
-        'NAME': env('NAME'), 
-        'USER': env('USER'), 
-        'PASSWORD': env('PASSWORD'),
-        'HOST': env('HOST'), 
-        'PORT': env('PORT'),
+if DEBUG:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
-}
+else: 
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'xoumsjnn', 
+            'USER': 'xoumsjnn', 
+            'PASSWORD': '5HKLDJUrJ3Vbm4XUmy84srHQpxYWtkrN',
+            'HOST': 'rosie.db.elephantsql.com', 
+            'PORT': 5432,
+        }
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -169,10 +172,9 @@ MESSAGES_TAGS = {
 }
 
 # Email settings 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' # core Django package.
-EMAIL_HOST = 'smtp.mail.yahoo.com' # whatever email hosting service you plan to use to send the emails
-EMAIL_PORT = 587 # the default email port that most email servers use
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = str(env('EMAIL_HOST_USER')) # your email
+EMAIL_BACKEND = str(env('EMAIL_BACKEND')) # core Django package.
+EMAIL_HOST = str(env('EMAIL_HOST')) # whatever email hosting service you plan to use to send the emails
+EMAIL_HOST_USER = str(env('EMAIL_HOST_USER'))
 EMAIL_HOST_PASSWORD = str(env('EMAIL_HOST_PASSWORD'))
-# values are security protocols that Django can use to send e-mails.
+EMAIL_PORT = str(env('EMAIL_PORT'))
+EMAIL_USE_TLS = True

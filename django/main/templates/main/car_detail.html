@@ -1,7 +1,7 @@
 {% extends 'base/base.html' %}
 {% load static %}
 {% block 'title' %}
-<title>AutoMax .
+<title>TradeWheels .
     {{ car.model }} Listing
 </title>
 {% endblock %}
@@ -96,7 +96,7 @@
             },
             dataType: "json",
             success: function(r){
-                alert('Tamam');
+                alert('Your email send successfully');
             },
             error: function(r, e){
                 alert(`error ${r.info}`)
